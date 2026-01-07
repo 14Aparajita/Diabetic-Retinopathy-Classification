@@ -183,9 +183,3 @@ MIT (Suggested)
 ![License: MIT](badge)
 ```
 
----
-
-If you want, next I can give you:
-- GitHub **issue template**,  
-- PR template,  
-- or landing-page text matching this README.
