@@ -168,18 +168,5 @@ MIT (Suggested)
 
 - GitHub: 14Aparajita 
 - Email: aparajitavaish@gmail.com
-```
 
----
-
-### ✅ How to Add
-
-- GitHub automatically renders all headings and tables.  
-- You can later add badges at the top:
-
-```
-![TensorFlow](badge)
-![React](badge)
-![License: MIT](badge)
-```
 
