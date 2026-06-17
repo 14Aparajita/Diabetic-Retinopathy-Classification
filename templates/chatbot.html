@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Medical AI Assistant - RetinoAI{% endblock %}
+
+{% block content %}
+<div class="chatbot-container">
+    <!-- Header -->
+    <div class="chatbot-header">
+        <div class="chatbot-header-logo">
+            <i class="material-icons">forum</i>
+        </div>
+        <div>
+            <h3 style="font-size: 15px; font-weight: 700;">Medical Chatbot</h3>
+            <p style="font-size: 12px; color: var(--text-secondary);">Ask questions regarding retinopathy, risk factors, and diagnosis.</p>
+        </div>
+    </div>
+    
+    <!-- Chat History -->
+    <div class="chat-history" id="chat-history">
+        <!-- Initial Greetings -->
+        <div class="chat-bubble bot">
+            Hello! I'm RetinoAI's assistant. How can I help you with diabetic retinopathy queries today?
+            <span style="font-size: 11px; font-weight: 600; color: #b91c1c; display: block; margin-top: 8px;">
+                ⚠️ Note: I am an AI assistant and do not provide official professional medical advice.
+            </span>
+            <span class="chat-bubble-time">{{ now }}</span>
+        </div>
+        
+        <!-- Db History -->
+        {% if chat_history %}
+            {% for chat in chat_history %}
+            <div class="chat-bubble {{ chat.sender_type }}">
+                {{ chat.message|safe }}
+                <span class="chat-bubble-time">
+                    {{ chat.timestamp.split(' ')[1] if ' ' in chat.timestamp else chat.timestamp }}
+                </span>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Suggestion Pills -->
+    <div class="chat-suggestions">
+        <button class="suggestion-pill">What is Diabetic Retinopathy?</button>
+        <button class="suggestion-pill">Common Symptoms</button>
+        <button class="suggestion-pill">Prevention Tips</button>
+        <button class="suggestion-pill">Available Treatments</button>
+        <button class="suggestion-pill">How to upload a scan?</button>
+    </div>
+
+    <!-- Input Form -->
+    <form class="chat-input-area" id="chat-form">
+        <input type="text" id="chat-input" placeholder="Ask about diabetic retinopathy symptoms, prevention, scans..." autocomplete="off" required>
+        <button type="submit" class="btn btn-primary" style="padding: 12px; min-width: 48px; justify-content: center; border-radius: var(--radius-md);">
+            <i class="material-icons">send</i>
+        </button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - RetinoAI{% endblock %}
+
+{% block content %}
+<!-- Welcome Banner -->
+<div class="welcome-banner">
+    <div class="welcome-text">
+        <h1>Welcome to RetinoAI!</h1>
+        <p>Your intelligent partner in diabetic retinopathy detection and management. Upload eye scans, review historical reports, or interact with our AI-powered medical chatbot for any queries regarding eye health.</p>
+        <a href="{{ url_for('upload_page') }}" class="btn btn-primary">
+            <i class="material-icons">cloud_upload</i>
+            <span>Upload & Scan Now</span>
+        </a>
+    </div>
+    <img src="{{ url_for('static', filename='img/retina_dashboard.png') }}" alt="RetinoAI Analytics" class="welcome-img">
+</div>
+
+<!-- Quick Actions Grid -->
+<h2 class="section-header">Quick Actions</h2>
+<div class="grid-cols-3">
+    <!-- Card 1: Upload Scan -->
+    <div class="card">
+        <h3 class="card-title">
+            <i class="material-icons">add_photo_alternate</i>
+            <span>Upload New Scan</span>
+        </h3>
+        <p class="card-desc">Check a new retinopathy scan and receive diagnostic classifications within seconds using our AI.</p>
+        <a href="{{ url_for('upload_page') }}" class="card-link">
+            <span>Go to Upload</span>
+            <i class="material-icons" style="font-size: 14px;">arrow_forward</i>
+        </a>
+    </div>
+
+    <!-- Card 2: Reports History -->
+    <div class="card">
+        <h3 class="card-title">
+            <i class="material-icons">history</i>
+            <span>View Reports History</span>
+        </h3>
+        <p class="card-desc">Review your past retina scans, confidence ratings, and download report summaries as PDF files.</p>
+        <a href="{{ url_for('history_page') }}" class="card-link">
+            <span>Go to History</span>
+            <i class="material-icons" style="font-size: 14px;">arrow_forward</i>
+        </a>
+    </div>
+
+    <!-- Card 3: Medical Chatbot -->
+    <div class="card">
+        <h3 class="card-title">
+            <i class="material-icons">chat</i>
+            <span>Medical Chatbot</span>
+        </h3>
+        <p class="card-desc">Ask questions, identify risk factors, and understand symptoms related to diabetic retinopathy.</p>
+        <a href="{{ url_for('chatbot_page') }}" class="card-link">
+            <span>Go to Chatbot</span>
+            <i class="material-icons" style="font-size: 14px;">arrow_forward</i>
+        </a>
+    </div>
+</div>
+
+<!-- Recent Activity List -->
+<div class="card activity-card">
+    <h2 class="section-header" style="margin-bottom: 20px;">Recent Activity</h2>
+    <div class="activity-list">
+        {% if recent_scans %}
+            {% for scan in recent_scans %}
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="material-icons">remove_red_eye</i>
+                </div>
+                <div class="activity-details">
+                    <div class="activity-title">
+                        Scan Uploaded: <span style="font-family: monospace;">{{ scan.image_path.split('/')[-1] }}</span>
+                    </div>
+                    <div class="activity-subtitle">
+                        Eye: <strong>{{ scan.eye_side }}</strong> | Severity: <strong>{{ scan.diagnosis_result }}</strong> ({{ (scan.confidence_score * 100)|round(1) }}%)
+                    </div>
+                </div>
+                <div class="activity-time">
+                    {{ scan.scan_date }}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <!-- Welcome activity shown when user has no scans (matches Figure 6.4) -->
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="material-icons">celebration</i>
+                </div>
+                <div class="activity-details">
+                    <div class="activity-title">Welcome to RetinoAI!</div>
+                    <div class="activity-subtitle">Explore your dashboard, check settings, or upload your first scan to start analyzing.</div>
+                </div>
+                <div class="activity-time">
+                    Just now
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

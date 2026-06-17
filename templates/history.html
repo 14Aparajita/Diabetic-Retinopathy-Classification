@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Reports History - RetinoAI{% endblock %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 32px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <h2 class="section-header" style="margin-bottom: 0;">Scan Reports History</h2>
+        <span style="font-size: 13px; color: var(--text-muted);">
+            Total: <strong>{{ scans|length }}</strong> report(s)
+        </span>
+    </div>
+    <p style="color: var(--text-secondary); margin-bottom: 24px; font-size: 14px;">
+        Review your past scans and diagnostic details. You can type in the header search bar to filter scans by name, date, or severity status.
+    </p>
+
+    <!-- Scans Table -->
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Preview</th>
+                    <th>File Name</th>
+                    <th>Upload Date</th>
+                    <th>Severity Status</th>
+                    <th style="text-align: right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if scans %}
+                    {% for scan in scans %}
+                    <tr>
+                        <td>
+                            <img class="table-img-preview" src="{{ scan.image_path }}" alt="Retina preview">
+                        </td>
+                        <td style="font-family: monospace; font-weight: 600;">
+                            {{ scan.image_path.split('/')[-1] }}
+                        </td>
+                        <td>
+                            {{ scan.scan_date }}
+                        </td>
+                        <td>
+                            {% if scan.diagnosis_result == 'No DR' %}
+                                <span class="severity-pill badge-success">No DR</span>
+                            {% elif scan.diagnosis_result == 'Mild' %}
+                                <span class="severity-pill badge-info">Mild</span>
+                            {% elif scan.diagnosis_result == 'Moderate' %}
+                                <span class="severity-pill badge-warning">Moderate</span>
+                            {% elif scan.diagnosis_result == 'Severe' %}
+                                <span class="severity-pill badge-danger">Severe</span>
+                            {% elif scan.diagnosis_result == 'Proliferative' %}
+                                <span class="severity-pill badge-danger-dark">Proliferative</span>
+                            {% endif %}
+                        </td>
+                        <td style="text-align: right;">
+                            <!-- View Details Modal Action -->
+                            <button class="action-icon-btn view-report-btn" data-id="{{ scan.id }}" title="View Report">
+                                <i class="material-icons">visibility</i>
+                            </button>
+                            <!-- Download dummy action -->
+                            <button class="action-icon-btn" onclick="window.print()" title="Print / Download PDF">
+                                <i class="material-icons">picture_as_pdf</i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 48px 16px;">
+                            <i class="material-icons" style="font-size: 36px; margin-bottom: 8px; display: block; color: var(--text-muted);">folder_open</i>
+                            No reports found. Upload a scan to generate your first report.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Detailed Report Modal Overlay (Figure 6.10) -->
+<div class="modal-overlay" id="report-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 style="font-size: 18px;">Report Details</h3>
+            <button class="action-icon-btn" id="close-modal-btn">
+                <i class="material-icons">close</i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-report-grid">
+                <!-- Left: Image scan -->
+                <div>
+                    <img id="modal-img" class="modal-report-image" src="" alt="Scan Image Details">
+                </div>
+                <!-- Right: Metadata parameters -->
+                <div style="display: flex; flex-direction: column; gap: 12px; justify-content: center;">
+                    <div style="font-size: 13px;">
+                        File Name: <strong id="modal-filename" style="font-family: monospace;">scan.jpg</strong>
+                    </div>
+                    <div style="font-size: 13px;">
+                        Eye Side: <strong id="modal-eye">Right</strong>
+                    </div>
+                    <div style="font-size: 13px;">
+                        Upload Date: <strong id="modal-date">June 16, 2026</strong>
+                    </div>
+                    <div style="font-size: 13px; display: flex; align-items: center; gap: 8px;">
+                        Severity: <span id="modal-severity" class="severity-pill">Mild</span>
+                    </div>
+                    <div style="font-size: 13px;">
+                        Confidence Score: <strong id="modal-confidence">95.0%</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="understanding-box">
+                <h4 id="modal-title">Mild Non-Proliferative DR</h4>
+                <p id="modal-desc">Description details go here...</p>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <h4 style="font-size: 14px; margin-bottom: 6px;">Recommendation:</h4>
+                <p id="modal-rec" style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">Recommendation advice...</p>
+            </div>
+            
+            <div class="disclaimer-box">
+                <strong>Disclaimer:</strong> This classification report is generated automatically by an AI model (SqueezeNet). It is provided for informational and research purposes only and does not constitute formal medical diagnosis or advice. Please consult an ophthalmologist for professional validation.
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" id="close-modal-btn" onclick="document.getElementById('report-modal').classList.remove('active');">
+                Close
+            </button>
+            <button class="btn btn-primary" onclick="window.print();">
+                <i class="material-icons">print</i>
+                <span>Print Report</span>
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

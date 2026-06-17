@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Retina Scan - RetinoAI{% endblock %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 32px;">
+    <h2 class="section-header" style="margin-bottom: 8px;">Upload Retinopathy Scan</h2>
+    <p style="color: var(--text-secondary); margin-bottom: 24px; font-size: 14px;">
+        Select a high-resolution fundus photography scan (JPG, JPEG, PNG, or WEBP; maximum 5MB). Our SqueezeNet model will analyze the image and classify the severity of diabetic retinopathy.
+    </p>
+
+    <!-- Upload Selection Form -->
+    <div id="upload-form-container">
+        <div class="grid-cols-3" style="grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px;">
+            <!-- Drag & Drop Zone -->
+            <div class="upload-zone" id="upload-dropzone">
+                <i class="material-icons upload-icon">cloud_upload</i>
+                <div class="upload-text">
+                    <h3>Drag and drop your scan here</h3>
+                    <p>or click to browse local files</p>
+                </div>
+                <input type="file" id="retina-file" style="display: none;" accept="image/*">
+            </div>
+
+            <!-- Configuration Options -->
+            <div class="card" style="box-shadow: none; border-color: var(--border-color); display: flex; flex-direction: column; justify-content: center;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="eye-side">Retinal Eye Side</label>
+                    <select id="eye-side" class="form-control" style="background-color: var(--bg-card); padding: 12px; font-weight: 600;">
+                        <option value="Right">Right Eye (OD)</option>
+                        <option value="Left">Left Eye (OS)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Selected File Preview -->
+        <div class="card" id="upload-preview-container" style="display: none; border-color: var(--primary); margin-bottom: 24px; padding: 16px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <img id="upload-preview-img" src="" alt="Scan Preview" style="width: 60px; height: 60px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                    <div>
+                        <div id="upload-preview-name" style="font-size: 14px; font-weight: 600;">filename.jpg</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">Ready for classification</div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="classify-btn" disabled>
+                    <i class="material-icons">analytics</i>
+                    <span>Classify Scan</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Processing/Progress Screen (Figure 6.7) -->
+    <div id="progress-panel" class="progress-panel" style="display: none;">
+        <div class="progress-header">
+            <span id="progress-status" style="display: flex; align-items: center; gap: 8px;">
+                <i class="material-icons" style="animation: spin 2s linear infinite; color: var(--primary);">sync</i>
+                <span>Analyzing retina scan...</span>
+            </span>
+            <span id="progress-percent">0%</span>
+        </div>
+        <div class="progress-bar-container">
+            <div id="progress-fill" class="progress-bar-fill"></div>
+        </div>
+    </div>
+
+    <!-- Diagnosis Result Screen (Figure 6.8) -->
+    <div id="result-panel" style="display: none; border-top: 1px solid var(--border-color); padding-top: 24px;">
+        <h3 style="font-size: 18px; margin-bottom: 20px;">Classification Result</h3>
+        
+        <div class="result-grid">
+            <!-- Left: Scan image -->
+            <div class="result-image-panel">
+                <img id="result-img" src="" alt="Retina Scan result">
+            </div>
+
+            <!-- Right: Details -->
+            <div class="result-info-panel">
+                <div class="result-header">
+                    <div>
+                        <h4 id="result-filename" style="font-size: 16px; margin-bottom: 2px; font-family: monospace;">scan_image.jpg</h4>
+                        <p style="font-size: 12px; color: var(--text-secondary);">
+                            Eye: <strong id="result-eye">Right</strong> | Analyzed on: <span id="result-date">2026-06-16 12:00 PM</span>
+                        </p>
+                    </div>
+                    <span id="result-severity" class="severity-pill">Mild</span>
+                </div>
+
+                <div class="understanding-box">
+                    <h4 id="result-title">Mild Non-Proliferative DR</h4>
+                    <p id="result-desc">Early signs of diabetic retinopathy are present, such as microaneurysms. Blood sugar and blood pressure control are crucial.</p>
+                </div>
+
+                <div>
+                    <h4 style="font-size: 14px; margin-bottom: 8px;">Recommendations:</h4>
+                    <p id="result-rec" style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+                        • Regular eye checkups are advised. Keep blood sugar, pressure, and lipids under tight control.
+                    </p>
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-top: 12px;">
+                    <button class="btn btn-outline" onclick="window.location.reload();">
+                        <i class="material-icons">refresh</i>
+                        <span>Upload Another Scan</span>
+                    </button>
+                    <a href="{{ url_for('history_page') }}" class="btn btn-primary">
+                        <i class="material-icons">history</i>
+                        <span>View History</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+{% endblock %}
