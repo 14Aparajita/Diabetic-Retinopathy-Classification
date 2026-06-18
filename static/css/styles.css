@@ -20,6 +20,17 @@
     --radius-md: 12px;
     --radius-lg: 18px;
     --transition-base: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --input-bg: #fafafa;
+}
+
+body.dark-mode {
+    --bg-main: #1e293b;
+    --bg-card: #0f172a;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #64748b;
+    --border-color: #334155;
+    --input-bg: #1e293b;
 }
 
 /* Base resets and defaults */
@@ -246,6 +257,68 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: center;
     font-weight: 600;
     font-size: 14px;
+}
+
+/* Dropdown Profile Menu */
+.profile-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    width: 240px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    display: none;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.profile-dropdown.show {
+    display: flex;
+}
+
+.dropdown-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dropdown-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.dropdown-email {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: var(--bg-main);
+}
+
+.dropdown-item i {
+    font-size: 18px;
+    color: var(--text-secondary);
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 4px 0;
 }
 
 /* Page containers */
@@ -530,7 +603,8 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 14px;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
-    background-color: #fafafa;
+    background-color: var(--input-bg);
+    color: var(--text-primary);
     outline: none;
     transition: var(--transition-base);
 }

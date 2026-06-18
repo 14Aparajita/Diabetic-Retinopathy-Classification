@@ -25,6 +25,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 4000);
     };
 
+    // Dark/Light Mode Toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const body = document.body;
+    
+    // Check local storage for preference
+    if (localStorage.getItem('theme') === 'dark') {
+        body.classList.add('dark-mode');
+        if(themeToggle) themeToggle.innerHTML = '<i class="material-icons">light_mode</i>';
+    }
+    
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeToggle.innerHTML = isDark ? '<i class="material-icons">light_mode</i>' : '<i class="material-icons">dark_mode</i>';
+        });
+    }
+
+    // Profile Dropdown Toggle
+    const userProfileBtn = document.getElementById('user-profile-btn');
+    const profileDropdown = document.getElementById('profile-dropdown');
+    
+    if (userProfileBtn && profileDropdown) {
+        userProfileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('show');
+        });
+        
+        document.addEventListener('click', (e) => {
+            if (!userProfileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+                profileDropdown.classList.remove('show');
+            }
+        });
+    }
+
     // Sidebar Mobile Toggle
     const menuToggle = document.querySelector('.header-btn[title="Menu"]');
     const sidebar = document.querySelector('.sidebar');
@@ -63,20 +99,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Search Bar Filtering (Table filtering for history page)
+    // Search Bar Filtering (Dashboard and History)
     const searchInput = document.getElementById('header-search-input');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase().strip();
-            const tableRows = document.querySelectorAll('.data-table tbody tr');
+            const query = e.target.value.toLowerCase().trim();
             
+            // Filter history table
+            const tableRows = document.querySelectorAll('.data-table tbody tr');
             tableRows.forEach(row => {
                 const text = row.textContent.toLowerCase();
-                if (text.includes(query)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+            
+            // Filter activity items
+            const activityItems = document.querySelectorAll('.activity-item');
+            activityItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(query) ? '' : 'none';
+            });
+            
+            // Filter quick action cards
+            const cards = document.querySelectorAll('.grid-cols-3 .card');
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(query) ? '' : 'none';
             });
         });
     }

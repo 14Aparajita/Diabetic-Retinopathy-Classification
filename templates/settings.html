@@ -2,107 +2,244 @@
 
 {% block title %}Settings - RetinoAI{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Specific Settings Page Styles */
+    .settings-section {
+        margin-bottom: 32px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .settings-section:last-child {
+        border-bottom: none;
+    }
+
+    .settings-header {
+        margin-bottom: 24px;
+    }
+
+    .settings-header h2 {
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 4px;
+    }
+
+    .settings-header h2 i {
+        color: var(--text-muted);
+        font-size: 20px;
+    }
+
+    .settings-header p {
+        font-size: 13px;
+        color: var(--text-secondary);
+    }
+
+    .form-row {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 20px;
+    }
+
+    .form-row .form-group {
+        flex: 1;
+        margin-bottom: 0;
+    }
+    
+    /* Custom Toggle Switch */
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 24px;
+    }
+
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--text-muted);
+        transition: .4s;
+        border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+        background-color: var(--primary);
+    }
+
+    input:checked + .toggle-slider:before {
+        transform: translateX(20px);
+    }
+
+    .preference-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .preference-row:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="welcome-banner" style="padding: 20px 30px; margin-bottom: 24px; min-height: auto;">
     <div class="welcome-text">
-        <h1 style="font-size: 24px; margin-bottom: 8px;">Account Settings</h1>
-        <p style="margin-bottom: 0;">Manage your profile, notification preferences, and account security.</p>
+        <h1 style="font-size: 24px; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+            <i class="material-icons" style="color: var(--primary);">settings</i> Application Settings
+        </h1>
+        <p style="margin-bottom: 0;">Manage your account, notification preferences, and other application settings.</p>
     </div>
 </div>
 
-<div class="grid-cols-2" style="grid-template-columns: 1fr 1fr; gap: 24px;">
-    <!-- Profile Card -->
-    <div class="card" style="align-self: start;">
-        <h3 class="card-title" style="margin-bottom: 20px;">
-            <i class="material-icons">person</i>
-            <span>Profile Information</span>
-        </h3>
+<div class="card" style="padding: 32px;">
+    
+    <!-- Profile Information Section -->
+    <div class="settings-section">
+        <div class="settings-header">
+            <h2><i class="material-icons">account_circle</i> Profile Information</h2>
+            <p>Update your personal details.</p>
+        </div>
+        
         <form action="{{ url_for('settings_page') }}" method="POST">
             <input type="hidden" name="action" value="update_profile">
             
-            <div class="form-group" style="margin-bottom: 16px;">
-                <label for="full_name" style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-primary);">Full Name</label>
-                <input type="text" id="full_name" name="full_name" class="form-control" value="{{ user.full_name }}" required style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px;">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" id="full_name" name="full_name" class="form-control" value="{{ user.full_name }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control" value="{{ user.email }}" required>
+                </div>
             </div>
             
-            <div class="form-group" style="margin-bottom: 24px;">
-                <label for="email" style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-primary);">Email Address</label>
-                <input type="email" id="email" name="email" class="form-control" value="{{ user.email }}" required style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px;">
+            <div class="form-group">
+                <label for="bio">Short Bio (Optional)</label>
+                <input type="text" id="bio" name="bio" class="form-control" placeholder="Medical professional specializing in..." value="{{ user.bio if user.bio else '' }}">
             </div>
             
-            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Save Profile</button>
+            <button type="submit" class="btn btn-primary" style="margin-top: 8px;">Save Profile Changes</button>
         </form>
     </div>
 
-    <!-- Password Card -->
-    <div class="card" style="align-self: start;">
-        <h3 class="card-title" style="margin-bottom: 20px;">
-            <i class="material-icons">lock</i>
-            <span>Change Password</span>
-        </h3>
-        <form action="{{ url_for('settings_page') }}" method="POST">
-            <input type="hidden" name="action" value="change_password">
-            
-            <div class="form-group" style="margin-bottom: 16px;">
-                <label for="current_password" style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-primary);">Current Password</label>
-                <input type="password" id="current_password" name="current_password" class="form-control" required style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px;">
-            </div>
-            
-            <div class="form-group" style="margin-bottom: 16px;">
-                <label for="new_password" style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-primary);">New Password</label>
-                <input type="password" id="new_password" name="new_password" class="form-control" required style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px;">
-            </div>
-            
-            <div class="form-group" style="margin-bottom: 24px;">
-                <label for="confirm_password" style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-primary);">Confirm New Password</label>
-                <input type="password" id="confirm_password" name="confirm_password" class="form-control" required style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px;">
-            </div>
-            
-            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Update Password</button>
-        </form>
-    </div>
-
-    <!-- Preferences Card -->
-    <div class="card" style="align-self: start;">
-        <h3 class="card-title" style="margin-bottom: 20px;">
-            <i class="material-icons">notifications</i>
-            <span>Notifications & Preferences</span>
-        </h3>
+    <!-- Notification Preferences Section -->
+    <div class="settings-section">
+        <div class="settings-header">
+            <h2><i class="material-icons">notifications_active</i> Notification Preferences</h2>
+            <p>Control how you receive notifications from RetinoAI.</p>
+        </div>
+        
         <form action="{{ url_for('settings_page') }}" method="POST">
             <input type="hidden" name="action" value="update_preferences">
             
-            <div class="form-group" style="margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px;">
+            <div class="preference-row">
                 <div>
-                    <label for="email_notif" style="display: block; font-weight: 500; font-size: 14px; color: var(--text-primary);">Email Notifications</label>
-                    <span style="font-size: 12px; color: var(--text-secondary);">Receive updates about your scans via email</span>
+                    <label style="display: block; font-weight: 600; font-size: 14px; margin-bottom: 4px;">Email Notifications</label>
+                    <span style="font-size: 13px; color: var(--text-secondary);">Receive important updates and report summaries via email.</span>
                 </div>
-                <input type="checkbox" id="email_notif" name="email_notif" value="1" {% if user.email_notif %}checked{% endif %} style="width: 18px; height: 18px; cursor: pointer;">
+                <label class="toggle-switch">
+                    <input type="checkbox" name="email_notif" value="1" {% if user.email_notif %}checked{% endif %}>
+                    <span class="toggle-slider"></span>
+                </label>
             </div>
             
-            <div class="form-group" style="margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px;">
+            <div class="preference-row">
                 <div>
-                    <label for="push_notif" style="display: block; font-weight: 500; font-size: 14px; color: var(--text-primary);">In-App Notifications</label>
-                    <span style="font-size: 12px; color: var(--text-secondary);">Show alerts in the dashboard drawer</span>
+                    <label style="display: block; font-weight: 600; font-size: 14px; margin-bottom: 4px;">Push Notifications (Demo)</label>
+                    <span style="font-size: 13px; color: var(--text-secondary);">Get real-time alerts on your device (feature currently for demonstration).</span>
                 </div>
-                <input type="checkbox" id="push_notif" name="push_notif" value="1" {% if user.push_notif %}checked{% endif %} style="width: 18px; height: 18px; cursor: pointer;">
+                <label class="toggle-switch">
+                    <input type="checkbox" name="push_notif" value="1" {% if user.push_notif %}checked{% endif %}>
+                    <span class="toggle-slider"></span>
+                </label>
             </div>
             
-            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Save Preferences</button>
+            <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Save Notification Settings</button>
         </form>
     </div>
 
-    <!-- Danger Zone Card -->
-    <div class="card" style="align-self: start; border: 1px solid #ef4444;">
-        <h3 class="card-title" style="margin-bottom: 20px; color: #ef4444;">
-            <i class="material-icons">warning</i>
-            <span>Danger Zone</span>
-        </h3>
-        <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 24px;">Once you delete your account, there is no going back. All your scan history, data, and preferences will be permanently erased.</p>
+    <!-- Security & Privacy Section -->
+    <div class="settings-section" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
+        <div class="settings-header">
+            <h2><i class="material-icons">lock_outline</i> Security & Privacy</h2>
+            <p>Manage your account security and data privacy.</p>
+        </div>
         
-        <form action="{{ url_for('settings_page') }}" method="POST" onsubmit="return confirm('Are you sure you want to permanently delete your account? This action cannot be undone.');">
-            <input type="hidden" name="action" value="delete_account">
-            <button type="submit" class="btn" style="width: 100%; justify-content: center; background-color: #ef4444; color: white; padding: 12px;">Delete Account</button>
-        </form>
+        <div style="margin-bottom: 24px;">
+            <button class="btn btn-outline" onclick="document.getElementById('password-form').style.display='block'" style="margin-bottom: 8px;">Change Password</button>
+            <p style="font-size: 13px; color: var(--text-secondary);">It's a good idea to use a strong password that you're not using elsewhere.</p>
+            
+            <!-- Hidden Password Form -->
+            <form id="password-form" action="{{ url_for('settings_page') }}" method="POST" style="display: none; margin-top: 16px; padding: 16px; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                <input type="hidden" name="action" value="change_password">
+                <div class="form-group">
+                    <label for="current_password">Current Password</label>
+                    <input type="password" id="current_password" name="current_password" class="form-control" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="new_password">New Password</label>
+                        <input type="password" id="new_password" name="new_password" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm_password">Confirm New Password</label>
+                        <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Password</button>
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('password-form').style.display='none'">Cancel</button>
+            </form>
+        </div>
+        
+        <div class="preference-row" style="margin-bottom: 24px;">
+            <div>
+                <label style="display: block; font-weight: 600; font-size: 14px; margin-bottom: 4px;">Enable Two-Factor Authentication (2FA)</label>
+                <span style="font-size: 13px; color: var(--text-secondary);">Add an extra layer of security to your account (demo only).</span>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        
+        <div>
+            <form action="{{ url_for('settings_page') }}" method="POST" onsubmit="return confirm('Are you sure you want to permanently delete your account? This action cannot be undone.');">
+                <input type="hidden" name="action" value="delete_account">
+                <button type="submit" class="btn btn-danger" style="margin-bottom: 8px;">Delete Account</button>
+            </form>
+            <p style="font-size: 13px; color: var(--text-secondary);">Permanently delete your account and all associated data.</p>
+        </div>
     </div>
 </div>
 {% endblock %}

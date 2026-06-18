@@ -3,3 +3,5 @@ Pillow
 numpy
 opencv-python-headless
 gunicorn
+tensorflow-cpu
+h5py

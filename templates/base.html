@@ -68,6 +68,9 @@
                 
                 <!-- Action bell and user profile -->
                 <div class="header-actions">
+                    <button class="header-btn" id="theme-toggle" title="Toggle Dark Mode">
+                        <i class="material-icons">dark_mode</i>
+                    </button>
                     <button class="header-btn" id="notif-bell" title="Notifications">
                         <i class="material-icons">notifications</i>
                         {% if unread_count and unread_count > 0 %}
@@ -78,12 +81,36 @@
                         <i class="material-icons">menu</i>
                     </button>
                     
-                    <div class="user-profile" onclick="window.location.href='{{ url_for('settings_page') }}'">
-                        <span class="user-name" style="font-size: 14px; font-weight: 600; color: var(--text-secondary);">
-                            {{ session.get('full_name') }}
-                        </span>
-                        <div class="user-avatar">
-                            {{ session.get('full_name')[0] if session.get('full_name') else 'U' }}
+                    <div class="user-profile-container" style="position: relative;">
+                        <div class="user-profile" id="user-profile-btn">
+                            <span class="user-name" style="font-size: 14px; font-weight: 600; color: var(--text-secondary);">
+                                {{ session.get('username') }}
+                            </span>
+                            <div class="user-avatar">
+                                {{ session.get('full_name')[0] if session.get('full_name') else 'U' }}
+                            </div>
+                        </div>
+                        
+                        <!-- Dropdown Menu -->
+                        <div class="profile-dropdown" id="profile-dropdown">
+                            <div class="dropdown-header">
+                                <div class="dropdown-name">{{ session.get('username') }}</div>
+                                <div class="dropdown-email">{{ session.get('email') }}</div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a href="{{ url_for('settings_page') }}" class="dropdown-item">
+                                <i class="material-icons">person_outline</i> Profile
+                            </a>
+                            <a href="{{ url_for('settings_page') }}" class="dropdown-item">
+                                <i class="material-icons">settings</i> Settings
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i class="material-icons">help_outline</i> Help & Support
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="{{ url_for('logout') }}" class="dropdown-item">
+                                <i class="material-icons">logout</i> Log out
+                            </a>
                         </div>
                     </div>
                 </div>
